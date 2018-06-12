@@ -1,4 +1,4 @@
-Deployment
+### Deployment
 
 1. Create vendor directory, do this on all master and nodes.
     mkdir -p /usr/libexec/kubernetes/kubelet-plugins/volume/exec/yr~yrfs
@@ -9,13 +9,15 @@ Deployment
 4. Setup yrfs client
     systemctl start yrfs-client
 
-Sample to use yrfs driver
+### Sample to use yrfs driver
 
 1. Create a pod
 
+```
     kubectl create -f nginx-yrfs.yaml
-
-
+```
+    
+```
     apiVersion: v1
     kind: Pod
     metadata:
@@ -38,21 +40,30 @@ Sample to use yrfs driver
           options:
             path: "k8s-vol-1"           #must be set explict, directory will be created at /mnt/yrfs/$path
             accessMode: "ReadWriteMany" #default is ReadWriteMany, value can be set ReadWriteMany/ReadWriteOnce/ReadOnlyMany
+```
 
 2. Create file in mountpoint
+```
     kubectl exec nginx-yrfs -- touch /data/test.log
+```
 3. Check the result
     ls /mnt/yrfs/${path}/test.log
 
-Use PV and PVC
+### Use PV and PVC
 
 1. Create PersistentVolume
+```
     kubectl create -f yrfs-pv.yaml
     kubectl get pv  #check the result
+```
 2. Create PersistentVolumeClaim
+```
     kubectl create -f yrfs-pvc.yaml
     kubectl get pvc #check the result, pv will be bound to pvc
+```
 3. Create busybox
+```
     kubectl create -f yrfs-busybox-rc.yaml
     kubectl exec pod <pod_name> -- cat /mnt/index.html
+```
 
